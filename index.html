@@ -141,7 +141,16 @@ const supabaseClient = window.supabase.createClient(
   SUPABASE_PUBLISHABLE_KEY
 );
 
-const S = 'lexora-pro-data';let data=JSON.parse(localStorage.getItem(S)||'{"saved":[],"history":[],"collections":[],"xp":0,"reviews":{},"dark":false}');if(!data.saved)data.saved=[];if(!data.history)data.history=[];if(!data.collections)data.collections=[];let page='dictionary',entry=null,flashIndex=0,showAnswer=false;document.body.classList.toggle('dark',!!data.dark);document.getElementById('theme').textContent=data.dark?'☀':'☾';function persist(){localStorage.setItem(S,JSON.stringify(data))}function openAuth(){
+const S = 'lexora-pro-data';let data=JSON.parse(localStorage.getItem(S)||'{"saved":[],"history":[],"collections":[],"xp":0,"reviews":{},"dark":false}');if(!data.saved)data.saved=[];if(!data.history)data.history=[];if(!data.collections)data.collections=[];let page='dictionary',entry=null,flashIndex=0,showAnswer=false;document.body.classList.toggle('dark',!!data.dark);document.getElementById('theme').textContent=data.dark?'☀':'☾';function persist(){localStorage.setItem(S,JSON.stringify(data))}async function getCurrentUser(){
+  const {data:{user},error}=await supabaseClient.auth.getUser();
+
+  if(error){
+    console.error('Could not get current user:',error);
+    return null;
+  }
+
+  return user;
+}function openAuth(){
   document.getElementById('authOverlay').classList.remove('hidden');
   showLogin();
 }
